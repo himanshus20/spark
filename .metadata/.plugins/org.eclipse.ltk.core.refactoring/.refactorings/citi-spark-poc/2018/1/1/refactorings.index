@@ -1,0 +1,7 @@
+1514917848501	Rename method 'kafkaDemo'
+1514917854611	Rename method 'kafkapProducerDemo'
+1514918432972	Extract local variable 'TOPIC'
+1514921031899	Extract method 'setKafkaConsumerProps'
+1514921060306	Extract method 'setKafkaProducerProps'
+1514921325303	Extract method 'callConsumer'
+1515168795881	Delete element

@@ -1,0 +1,70 @@
+package com.citi.example;
+
+import java.io.StringReader;
+import java.util.Iterator;
+import java.util.Properties;
+
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.FlatMapFunction;
+import org.apache.spark.api.java.function.Function;
+
+import au.com.bytecode.opencsv.CSVReader;
+import scala.Tuple2;
+
+public class CitiJavaSpark {
+
+    public static void main(String[] args){
+    	System.setProperty("hadoop.home.dir", "C:\\Users\\hs31777\\Desktop\\Spark\\spark-2.2.0-bin-hadoop2.7\\spark-2.2.0-bin-hadoop2.7");
+    	
+        SparkConf sconf = new SparkConf();
+        sconf.setAppName("Citi Java Spark Application");
+        sconf.setMaster("spark://168.72.195.249:7077");
+        JavaSparkContext javaSparkContext = new JavaSparkContext(sconf);
+
+        sparkDemo(javaSparkContext);
+        kafkaDemo(javaSparkContext);
+        
+        javaSparkContext.close();
+    }
+
+	private static void kafkaDemo(JavaSparkContext sc) {
+		Properties props = new Properties();
+		props.put("bootstrap.servers", "168.72.195.249:9092");
+		props.put("key.serializer",	"io.confluent.kafka.serializers.KafkaAvroSerializer");
+		props.put("value.serializer","io.confluent.kafka.serializers.KafkaAvroSerializer");
+		props.put("schema.registry.url", schemaUrl);
+		
+	}
+
+	private static void sparkDemo(JavaSparkContext sc) {
+		/*    String csvInput = "C:\\Users\\hs31777\\Desktop\\Spark\\names.csv";
+		    String outputFile = "C:\\Users\\hs31777\\Desktop\\Spark\\Output\\";
+		    */
+		    String csvInput = "/mnt/dataspace/iem/hs31777/names.csv";
+		    String outputFile = "/mnt/dataspace/iem/hs31777/Output/";
+		    
+		    //JavaRDD<String> data =  sc.textFile(csvInput);
+		    JavaPairRDD<String, String> csvData = sc.wholeTextFiles(csvInput);
+		    //JavaRDD<String[]> keyedRDD = csvData.flatMap(new ParseLine());
+		    
+		    JavaRDD<String[]> keyedRDD1 = csvData.flatMap(new ParseLine());
+
+		    JavaRDD<String[]> result =
+		    		keyedRDD1.filter(new Function<String[], Boolean>() {
+		                public Boolean call(String[] input) { return input[0].contains("Er"); }});
+
+		    result.saveAsTextFile(outputFile);
+	}
+
+    public static class ParseLine implements FlatMapFunction<Tuple2<String, String>, String[]> {
+
+    	@Override
+		public Iterator<String[]> call(Tuple2<String, String> t) throws Exception {
+			CSVReader reader = new CSVReader(new StringReader(t._2()));
+            return reader.readAll().iterator();
+		}
+    }
+}

@@ -1,0 +1,27 @@
+
+squid:S2293b"YReplace the type specification in this constructor call with the diamond operator ("<>").(ƒ¿—8¤éÏã,H RMINORZ
+CODE_SMELL
+‰squid:S37767"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(Š¹å8¤éÏã,H¡RCRITICALZ
+CODE_SMELL
+squid:S00112Ì"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8¤éÏã,H¢RMAJORZ
+CODE_SMELL
+¹squid:S1186¡"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(õñ…ñ8¤éÏã,H§RCRITICALZ
+CODE_SMELL
+¹squid:S1186œ"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ËˆÆü8¤éÏã,H¦RCRITICALZ
+CODE_SMELL
+…squid:S3008("RRename this field "_zkPath" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(§¢<8¤éÏã,HRMINORZ
+CODE_SMELL
+squid:S2293:"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ö»êİ8¤éÏã,HRMINORZ
+CODE_SMELL
+¸squid:S1186’"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ø—»I8¤éÏã,H¤RCRITICALZ
+CODE_SMELL
+¾squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¯¼ğ‡ùÿÿÿÿ8¤éÏã,H£RCRITICALZ
+CODE_SMELL
+¾squid:S1186—"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(åÕŠËşÿÿÿÿ8¤éÏã,H¥RCRITICALZ
+CODE_SMELL
+‹squid:S00117L"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Òî•ôùÿÿÿÿ8¤éÏã,H¨RMINORZ
+CODE_SMELL
+„squid:CommentedOutCodeLine!"<This block of commented-out lines of code should be removed.(Â¥Ë†ùÿÿÿÿ8˜ËÙã,H©RMAJORZ
+CODE_SMELL
+squid:S2293["YReplace the type specification in this constructor call with the diamond operator ("<>").(úÓÂ8¤éÏã,HŸRMINORZ
+CODE_SMELL

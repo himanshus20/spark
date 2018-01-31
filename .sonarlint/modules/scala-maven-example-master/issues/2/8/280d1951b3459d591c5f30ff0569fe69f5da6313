@@ -1,0 +1,66 @@
+
+asquid:S14818"-Remove this unused "csvInput" local variable.(½êæ«8ı‰åã,H°RMINORZ
+CODE_SMELL
+xsquid:UnusedPrivateMethodh"6Remove this unused private "kafkaProducerDemo" method.(ŸÇ´ 8³Û¦ã,H÷RMAJORZ
+CODE_SMELL
+squid:CommentedOutCodeLine5"<This block of commented-out lines of code should be removed.(Õ˜±Æ8µû´ã,HˆRMAJORZ
+CODE_SMELL
+ysquid:S18544"ERemove this useless assignment to local variable "numberOfReceivers".(ƒ¤àŞ8–Óäã,H¯RMAJORZ
+CODE_SMELL
+[squid:S1604]"(Make this anonymous inner class a lambda(â×İ8¶à´,H¸RMAJORZ
+CODE_SMELL
+fsquid:S1602É",Remove useless curly braces around statement(Ô£¼œùÿÿÿÿ8¾ı ´,HÚRMINORZ
+CODE_SMELL
+‚squid:S2095ª"RUse try-with-resources or close this "JavaStreamingContext" in a "finally" clause.(Á±¦Ò8¶à´,HìRBLOCKERZBUG
+csquid:S1481E"*Remove this unused "words" local variable.(ß¯áùúÿÿÿÿ8éííã,H½RMINORZ
+CODE_SMELL
+…squid:ModifiersOrderCheck'"EReorder the modifiers to comply with the Java Language Specification.(‚ô‰¼şÿÿÿÿHßRMINORZ
+CODE_SMELL
+osquid:S1313C"3Make this IP "168.72.195.249" address configurable.(ª’Îûÿÿÿÿ8’İëã,H·RMINORZVULNERABILITY
+œsquid:S11928"eDefine a constant instead of duplicating this literal "/mnt/dataspace/iem/hs31777/names.csv" 3 times.(½êæ«8¸·½ã,H˜RCRITICALZ
+CODE_SMELL
+„squid:CommentedOutCodeLine,"<This block of commented-out lines of code should be removed.(ÖÊ¬õüÿÿÿÿ8¸·½ã,HRMAJORZ
+CODE_SMELL
+squid:CommentedOutCodeLiner"<This block of commented-out lines of code should be removed.(Õ˜±Æ8¶à´,HíRMAJORZ
+CODE_SMELL
+`squid:S1148“"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8¶à´,HçRMINORZVULNERABILITY
+“squid:S2293¡"YReplace the type specification in this constructor call with the diamond operator ("<>").(Û¼èºøÿÿÿÿ8¶à´,HëRMINORZ
+CODE_SMELL
+psquid:S1313Ô"3Make this IP "168.72.195.249" address configurable.(ªó¼’ıÿÿÿÿ8¶à´,HãRMINORZVULNERABILITY
+‡squid:ModifiersOrderCheck("EReorder the modifiers to comply with the Java Language Specification.(ßÆûş8›Áã,H™RMINORZ
+CODE_SMELL
+psquid:S18548"<Remove this useless assignment to local variable "csvInput".(½êæ«8ı‰åã,H±RMAJORZ
+CODE_SMELL
+€squid:CommentedOutCodeLine®"<This block of commented-out lines of code should be removed.(µñ”ì8Ë±Ÿ´,HŞRMAJORZ
+CODE_SMELL
+’
+squid:S135¾"YReduce the total number of break and continue statements in this loop to use at most one.(˜ïˆÿÿÿÿÿ8¶à´,HæRMINORZ
+CODE_SMELL
+~squid:UnusedPrivateMethodœ"6Remove this unused private "kafkaConsumerDemo" method.(ÿÄš†øÿÿÿÿ8³Û¦ã,HøRMAJORZ
+CODE_SMELL
+fsquid:S1659¼",Declare "noRecordsCount" on a separate line.(İ¾´µşÿÿÿÿ8¶à´,HÜRMINORZ
+CODE_SMELL
+squid:CommentedOutCodeLineS"<This block of commented-out lines of code should be removed.(Õ˜±Æ8¸·½ã,H‘RMAJORZ
+CODE_SMELL
+…squid:CommentedOutCodeLine¨"<This block of commented-out lines of code should be removed.(Â³„æÿÿÿÿÿ8Ë±Ÿ´,HâRMAJORZ
+CODE_SMELL
+]squid:S1481ª"(Remove this unused "jsc" local variable.(Á±¦Ò8–Óäã,H­RMINORZ
+CODE_SMELL
+rsquid:S18549">Remove this useless assignment to local variable "outputFile".(¢‰·’8¦Ğìã,HºRMAJORZ
+CODE_SMELL
+jsquid:S14814"6Remove this unused "numberOfReceivers" local variable.(ƒ¤àŞ8–Óäã,H¬RMINORZ
+CODE_SMELL
+xsquid:UnusedPrivateMethodL"6Remove this unused private "sparkFileReadDemo" method.(‚Å– 8¸·½ã,HŒRMAJORZ
+CODE_SMELL
+lsquid:S1854ª"7Remove this useless assignment to local variable "jsc".(Á±¦Ò8¶à´,HåRMAJORZ
+CODE_SMELL
+rsquid:S1854E"9Remove this useless assignment to local variable "words".(ß¯áùúÿÿÿÿ8éííã,H¾RMAJORZ
+CODE_SMELL
+\squid:S1604{"(Make this anonymous inner class a lambda(ß‘®8¸·½ã,H”RMAJORZ
+CODE_SMELL
+„squid:CommentedOutCodeLine."<This block of commented-out lines of code should be removed.(ÃßËˆıÿÿÿÿ8³Û¦ã,HùRMAJORZ
+CODE_SMELL
+€squid:ModifiersOrderCheck)"EReorder the modifiers to comply with the Java Language Specification.(ÉÜÄãHÛRMINORZ
+CODE_SMELL
+csquid:S14819"/Remove this unused "outputFile" local variable.(¢‰·’8¦Ğìã,H¹RMINORZ
+CODE_SMELL

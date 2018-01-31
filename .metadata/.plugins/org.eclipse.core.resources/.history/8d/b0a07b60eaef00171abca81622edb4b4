@@ -1,0 +1,111 @@
+package com.citi.example;
+
+import java.io.StringReader;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.log4j.Logger;
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.FlatMapFunction;
+import org.apache.spark.api.java.function.Function;
+
+import au.com.bytecode.opencsv.CSVReader;
+import scala.Tuple2;
+
+@SuppressWarnings({ "rawtypes", "resource", "unchecked" ,"serial"})
+public class CitiJavaSpark {
+
+	final static Logger logger = Logger.getLogger(CitiJavaSpark.class);
+    public static void main(String[] args){
+    	System.setProperty("hadoop.home.dir", "C:\\Users\\hs31777\\Desktop\\Spark\\spark-2.2.0-bin-hadoop2.7\\spark-2.2.0-bin-hadoop2.7");
+       // sparkDemo();
+        kafkaDemo();
+        
+    }
+
+	
+	private static void kafkaDemo() {
+		SparkConf sconf = new SparkConf();
+        sconf.setAppName("Citi Java Spark Application_"+System.currentTimeMillis());
+        sconf.setMaster("spark://168.72.195.249:7077");
+        JavaSparkContext javaSparkContext = new JavaSparkContext(sconf);
+        
+        Properties kafkaProps = new Properties();
+		kafkaProps.put("bootstrap.servers", "168.72.195.249:9092");
+		kafkaProps.put("key.serializer",	"org.apache.kafka.common.serialization.StringSerializer");
+		kafkaProps.put("value.serializer",	"org.apache.kafka.common.serialization.StringSerializer");
+		KafkaProducer producer = new KafkaProducer<String, String>(kafkaProps);
+		
+		//String csvInput = "C:\\Users\\hs31777\\Desktop\\Spark\\names.csv";
+        String csvInput = "/mnt/dataspace/iem/hs31777/names.csv";
+        
+        logger.info("Reading CSV input from :"+csvInput);
+        JavaPairRDD<String, String> csvData = javaSparkContext.wholeTextFiles(csvInput);
+	    
+        logger.info("Reading RDD from FLATMAP input from CSV of Count:"+csvData.count());
+        JavaRDD<String[]> keyedRDD1 = csvData.flatMap(new ParseLine());
+		
+		JavaRDD<String[]> result =
+	    		keyedRDD1.filter(new Function<String[], Boolean>() {
+	                public Boolean call(String[] input) { return true; }});
+		
+		//We should not be doing it..Collect is costly
+		logger.info("Taking DATA FROM RESULT FOR COUNT:"+result.count());
+		List<String[]> dataCollected = result.take(10);
+		logger.info("Collected Total Data: "+dataCollected.size());
+		
+		for (String[] strings : dataCollected) {
+			for (String string : strings) {
+				logger.info("Producing Message to Kafka :"+string+", : Producer"+producer.toString());
+				ProducerRecord<String, String> record = new ProducerRecord<>("CitiTest", "PrecisionProducts_"+string, "India_"+string);
+				try {
+					producer.send(record);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		javaSparkContext.close();
+		producer.flush();
+		producer.close();
+	}
+
+	private static void sparkDemo() {
+		 SparkConf sconf = new SparkConf();
+	        sconf.setAppName("Citi Java Spark Application");
+	        sconf.setMaster("spark://168.72.195.249:7077");
+	        JavaSparkContext javaSparkContext = new JavaSparkContext(sconf);
+
+		/*    String csvInput = "C:\\Users\\hs31777\\Desktop\\Spark\\names.csv";
+		    String outputFile = "C:\\Users\\hs31777\\Desktop\\Spark\\Output\\";
+		    */
+		    String csvInput = "/mnt/dataspace/iem/hs31777/names.csv";
+		    String outputFile = "/mnt/dataspace/iem/hs31777/Output/";
+		    
+		    JavaPairRDD<String, String> csvData = javaSparkContext.wholeTextFiles(csvInput);
+		    
+		    JavaRDD<String[]> keyedRDD1 = csvData.flatMap(new ParseLine());
+
+		    JavaRDD<String[]> result =
+		    		keyedRDD1.filter(new Function<String[], Boolean>() {
+		                public Boolean call(String[] input) { return input[0].contains("Er"); }});
+
+		    result.saveAsTextFile(outputFile);
+		    javaSparkContext.close();
+	}
+
+    public static class ParseLine implements FlatMapFunction<Tuple2<String, String>, String[]> {
+
+    	@Override
+		public Iterator<String[]> call(Tuple2<String, String> t) throws Exception {
+			CSVReader reader = new CSVReader(new StringReader(t._2()));
+            return reader.readAll().iterator();
+		}
+    }
+}

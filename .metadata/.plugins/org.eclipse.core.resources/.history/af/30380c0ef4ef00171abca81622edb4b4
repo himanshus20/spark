@@ -1,0 +1,209 @@
+package com.citi.example;
+
+import java.io.StringReader;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.log4j.Logger;
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.FlatMapFunction;
+import org.apache.spark.api.java.function.Function;
+import org.apache.spark.streaming.Durations;
+import org.apache.spark.streaming.api.java.JavaPairInputDStream;
+import org.apache.spark.streaming.api.java.JavaStreamingContext;
+import org.apache.spark.streaming.kafka010.KafkaUtils;
+
+import au.com.bytecode.opencsv.CSVReader;
+import kafka.serializer.DefaultDecoder;
+import scala.Tuple2;
+
+@SuppressWarnings({ "rawtypes", "resource", "unchecked" ,"serial"})
+public class CitiJavaSpark {
+
+	final static String TOPIC = "CitiTest";
+	final static Logger logger = Logger.getLogger(CitiJavaSpark.class);
+    public static void main(String[] args){
+    	System.setProperty("hadoop.home.dir", "C:\\Users\\hs31777\\Desktop\\Spark\\spark-2.2.0-bin-hadoop2.7\\spark-2.2.0-bin-hadoop2.7");
+        //sparkDemo();
+        kafkaProducerDemo();
+        kafkaConsumerDemo();
+        
+    }
+
+    private static void kafkaConsumerDemo(){
+    	SparkConf sconf = new SparkConf();
+        sconf.setAppName("Citi Java Kafka Consumer_"+System.currentTimeMillis());
+        sconf.setMaster("spark://168.72.195.249:7077");
+        
+        Set<String> topics = new HashSet<String>();
+        topics.add(TOPIC);
+        topics.add("test");
+    	final Properties props = new Properties();
+    	setKafkaConsumerProps(props);
+        
+    	//Map<String, String> params = Topics.getDirectStreamParams(jobContext);
+    	 
+        JavaStreamingContext jsc = new JavaStreamingContext(sconf, Durations.seconds(30));
+        JavaPairInputDStream<String[], String[]> stream = KafkaUtils.createDirectStream(jsc,
+                String[].class,
+                String[].class,
+                DefaultDecoder.class,
+                DefaultDecoder.class,
+                null,
+                TOPIC);
+        
+        //callConsumer(props);
+        System.out.println("DONE");
+    }
+
+	private static void callConsumer(final Properties props) {
+		final Consumer<Long, String> consumer =
+                                    new KafkaConsumer<>(props);
+
+        // Subscribe to the topic.
+        consumer.subscribe(Collections.singletonList(TOPIC));
+        
+        final int giveUp = 8;   int noRecordsCount = 0;
+
+        while (true) {
+            final ConsumerRecords<Long, String> consumerRecords =
+                    consumer.poll(1000);
+
+            if (consumerRecords.count()==0) {
+                noRecordsCount++;
+                if (noRecordsCount > giveUp) break;
+                else continue;
+            }
+
+            System.out.println("Total records in consumer are:"+consumerRecords.count());
+            consumerRecords.forEach(record -> {
+            	logger.info("Consumer Record:"+
+                        record.key()+" "+ record.value()+" "+record.partition()+" " +record.offset()+"\n");
+            	System.out.println("Consumer Record:\n"+
+                        record.key()+" "+ record.value()+" "+record.partition()+" " +record.offset()+"\n");
+            });
+
+            consumer.commitAsync();
+        }
+        System.out.println("Closing Consumer now!!");
+        consumer.close();
+	}
+
+	private static void setKafkaConsumerProps(final Properties props) {
+		props.put("zookeeper.hosts", "168.72.195.249");
+        props.put("zookeeper.port", "2181");
+    	
+    	props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "168.72.195.249:2181");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG,
+                                    "CitiKafkaConsumer");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+        		StringDeserializer.class.getName());
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+                StringDeserializer.class.getName());
+        // Create the consumer using props.
+        props.put("consumer.forcefromstart", "true");
+        props.put("max.poll.records", "100");
+        props.put("consumer.fillfreqms", "1000");
+        props.put("consumer.backpressure.enabled", "true");
+	}
+	
+	private static void kafkaProducerDemo() {
+		SparkConf sconf = new SparkConf();
+        sconf.setAppName("Citi Java Spark Kafka Producer_"+System.currentTimeMillis());
+        sconf.setMaster("spark://168.72.195.249:7077");
+        JavaSparkContext javaSparkContext = new JavaSparkContext(sconf);
+        
+        Properties kafkaProps = new Properties();
+		setKafkaProducerProps(kafkaProps);
+		KafkaProducer producer = new KafkaProducer<String, String>(kafkaProps);
+		
+		//String csvInput = "C:\\Users\\hs31777\\Desktop\\Spark\\names.csv";
+        String csvInput = "/mnt/dataspace/iem/hs31777/names.csv";
+        
+        logger.info("Reading CSV input from :"+csvInput);
+        JavaPairRDD<String, String> csvData = javaSparkContext.wholeTextFiles(csvInput);
+	    
+        logger.info("Reading RDD from FLATMAP input from CSV of Count:"+csvData.count());
+        JavaRDD<String[]> keyedRDD1 = csvData.flatMap(new ParseLine());
+		
+		JavaRDD<String[]> result =
+	    		keyedRDD1.filter(new Function<String[], Boolean>() {
+	                public Boolean call(String[] input) { return true; }});
+		
+		//We should not be doing it..Collect is costly
+		logger.info("Taking DATA FROM RESULT FOR COUNT:"+result.count());
+		List<String[]> dataCollected = result.take(10);
+		logger.info("Collected Total Data: "+dataCollected.size());
+		
+		for (String[] strings : dataCollected) {
+			for (String string : strings) {
+				logger.info("Producing Message to Kafka :"+string+", : Producer"+producer.toString());
+				
+				ProducerRecord<String, String> record = new ProducerRecord<>(TOPIC, "PrecisionProducts_"+string, "India_"+string);
+				try {
+					producer.send(record);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		javaSparkContext.close();
+		producer.flush();
+		producer.close();
+	}
+
+	private static void setKafkaProducerProps(Properties kafkaProps) {
+		kafkaProps.put("bootstrap.servers", "168.72.195.249:9092");
+		kafkaProps.put("key.serializer",	"org.apache.kafka.common.serialization.StringSerializer");
+		kafkaProps.put("value.serializer",	"org.apache.kafka.common.serialization.StringSerializer");
+	}
+
+	private static void sparkDemo() {
+		 SparkConf sconf = new SparkConf();
+	        sconf.setAppName("Citi Java Spark Application");
+	        sconf.setMaster("spark://168.72.195.249:7077");
+	        JavaSparkContext javaSparkContext = new JavaSparkContext(sconf);
+
+		/*    String csvInput = "C:\\Users\\hs31777\\Desktop\\Spark\\names.csv";
+		    String outputFile = "C:\\Users\\hs31777\\Desktop\\Spark\\Output\\";
+		    */
+		    String csvInput = "/mnt/dataspace/iem/hs31777/names.csv";
+		    String outputFile = "/mnt/dataspace/iem/hs31777/Output/";
+		    
+		    //JavaRDD<String> data =  sc.textFile(csvInput);
+		    JavaPairRDD<String, String> csvData = javaSparkContext.wholeTextFiles(csvInput);
+		    //JavaRDD<String[]> keyedRDD = csvData.flatMap(new ParseLine());
+		    
+		    JavaRDD<String[]> keyedRDD1 = csvData.flatMap(new ParseLine());
+
+		    JavaRDD<String[]> result =
+		    		keyedRDD1.filter(new Function<String[], Boolean>() {
+		                public Boolean call(String[] input) { return input[0].contains("Er"); }});
+
+		    result.saveAsTextFile(outputFile);
+		    javaSparkContext.close();
+	}
+
+    public static class ParseLine implements FlatMapFunction<Tuple2<String, String>, String[]> {
+
+    	@Override
+		public Iterator<String[]> call(Tuple2<String, String> t) throws Exception {
+			CSVReader reader = new CSVReader(new StringReader(t._2()));
+            return reader.readAll().iterator();
+		}
+    }
+}

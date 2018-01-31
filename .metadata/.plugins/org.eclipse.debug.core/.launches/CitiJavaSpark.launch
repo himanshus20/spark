@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/scala-maven-example-master/src/main/java/com/citi/example/CitiJavaSpark.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<mapAttribute key="org.eclipse.debug.core.environmentVariables">
+<mapEntry key="HADOOP_HOME" value="C:\\Users\\hs31777\\Desktop\\Spark\\spark-2.2.0-bin-hadoop2.7\\spark-2.2.0-bin-hadoop2.7"/>
+</mapAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.citi.example.CitiJavaSpark"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="export SPARK_SUBMIT_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="scala-maven-example-master"/>
+</launchConfiguration>

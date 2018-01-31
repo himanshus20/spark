@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;scala-maven-example-master&apos; to &apos;citi-spark-poc&apos;" description="Rename resource &apos;scala-maven-example-master&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/scala-maven-example-master" name="citi-spark-poc" stamp="1517408337733" updateReferences="true"/>
+</session>

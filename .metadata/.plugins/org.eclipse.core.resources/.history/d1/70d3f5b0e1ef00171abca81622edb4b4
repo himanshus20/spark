@@ -1,0 +1,15 @@
+package com.citi.example;
+
+public class JavaMain {
+
+	public static void main(String[] args) {
+		System.err.println("JAVA_HOME="+System.getenv("JAVA_HOME"));
+		System.err.println("HADOOP_HOME="+System.getenv("HADOOP_HOME"));
+		
+		String[] strArr = {"123","245"};
+		for (String string : strArr) {
+			System.out.println(string);
+		}
+	}
+}
+
